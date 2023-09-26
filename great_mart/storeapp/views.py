@@ -1,12 +1,15 @@
 """
 All the views that will hold the logic for handling products in store
 """
+from django.db.models import Q
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404
 from django.views import View
 from django.views.generic.list import ListView
-from .models import Product
+from .models import Product, ProductVariations
 from category.models import Category
+from cart.views import _get_cart_id
+from cart.models import (Cart, CartItem)
 
 
 class AllProductsListView(ListView):
@@ -30,6 +33,7 @@ class StoreProductListView(ListView):
     List Out All The Store Product
     """
     model = Product
+    paginate_by = 4
     template_name = 'storeapp/store_page.html'
     context_object_name = 'all_products'
 
@@ -80,14 +84,41 @@ class ProductDetailView(View):
         """
         Response Against the incoming get request
         """
+        pv = ProductVariations.objects.all()
         print(category_slug, product_slug)
         try:
             product = Product.objects.filter(slug=product_slug)[0]
-            print(product.get_url())
+            cart = Cart.objects.get(cart_id=_get_cart_id(request))
+            in_cart = CartItem.objects.filter(cart=cart, product=product).exists()
+            print(in_cart)
+            # print(product.get_url())
         except Exception as e:
             raise e
 
         context = {
-            'single_product': product
+            'single_product': product,
+            'in_cart': in_cart,
+            'variations': pv
         }
-        return render(request, 'storeapp/product_detail.html',context=context)
+        return render(request, 'storeapp/product_detail.html', context=context)
+
+
+class SearchView(View):
+    def get(self, request):
+        if 'keyword' in request.GET:
+            keyword = request.GET['keyword']
+            print(keyword)
+        try:
+            products = Product.objects.order_by('-create_date').filter(
+                Q(description__icontains=keyword) |
+                Q(prod_name__icontains=keyword
+
+                  ))
+        except Product.DoesNotExits:
+            pass
+        context = {
+            'all_products':products,
+            'products':products.count()
+        }
+
+        return render(request, 'storeapp/store_page.html',context=context)

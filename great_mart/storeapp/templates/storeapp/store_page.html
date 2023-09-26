@@ -138,13 +138,30 @@
 						<span class="price">{{product.price}}</span>
 					</div> <!-- price-wrap.// -->
 				</div>
-				<a href="#" class="btn btn-block btn-primary">Add to cart </a>
+				<a href="{{product.get_url}}" class="btn btn-block btn-primary">View Detail</a>
 			</figcaption>
 		</figure>
 	</div> <!-- col.// -->
 	</a>
 	{% endfor %}
 </div>
+<div class="pagination">
+    <span class="step-links">
+        {% if page_obj.has_previous %}
+<!--             <a href="?page=1">&laquo; first</a> -->
+            <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+        {% endif %}
 
+        <span class="current">
+            Page <b>{{ page_obj.number }}</b> of <b>{{ page_obj.paginator.num_pages }}</b>.
+        </span>
+
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">next</a>
+<!--             <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a> -->
+        {% endif %}
+    </span>
+</div>
 </main>
+
 {% endblock %}

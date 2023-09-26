@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'category',
     'accounts',
     'storeapp',
+    'cart',
 ]
 
 MIDDLEWARE = [
@@ -51,6 +52,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
 ]
 
 ROOT_URLCONF = 'great_mart.urls'
@@ -66,7 +68,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'category.context_processors.menu_link'
+                'category.context_processors.menu_link',
+                'cart.context_processors.total_cart_items',
             ],
         },
     },

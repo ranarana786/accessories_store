@@ -11,5 +11,7 @@ urlpatterns = [
                   path('', AllProductsListView.as_view(), name='home'),
                   # Store App Urls
                   path('store/', include('storeapp.urls')),
-                  path('<slug:category_slug>/<slug:product_slug>', ProductDetailView.as_view(), name='product-detail')
+                  path('<slug:category_slug>/<slug:product_slug>', ProductDetailView.as_view(), name='product-detail'),
+                  # cart page urls
+                  path('cart/', include('cart.urls'))
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
